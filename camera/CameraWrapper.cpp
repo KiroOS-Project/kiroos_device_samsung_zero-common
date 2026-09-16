@@ -74,7 +74,11 @@ static int camera_device_open(const hw_module_t* module, const char* name,
     if (name != NULL) {
         if (check_vendor_module())
             return -EINVAL;
-        rv = camera3_device_open(module, name, device);
+        rv = camera2_device_open(module, name, device);
+        if (rv != 0) {
+            ALOGW("%s: camera2_device_open failed (%d), trying camera3", __FUNCTION__, rv);
+            rv = camera3_device_open(module, name, device);
+        }
     }
 
     return rv;
@@ -93,7 +97,11 @@ static int camera_get_camera_info(int camera_id, struct camera_info *info)
     ALOGV("%s", __FUNCTION__);
     if (check_vendor_module())
         return 0;
-    return gVendorModule->get_camera_info(camera_id, info);
+    int rv = gVendorModule->get_camera_info(camera_id, info);
+    if (rv == 0 && info != NULL) {
+        info->device_version = CAMERA_DEVICE_API_VERSION_1_0;
+    }
+    return rv;
 }
 
 static int camera_set_callbacks(const camera_module_callbacks_t *callbacks)

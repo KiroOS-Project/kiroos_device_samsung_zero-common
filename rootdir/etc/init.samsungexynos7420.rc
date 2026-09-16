@@ -578,9 +578,8 @@ on boot
 
 # permissions for bluetooth.
     setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
-    chown bluetooth net_bt_stack ro.bt.bdaddr_path
-    chown radio net_bt_stack /efs/bluetooth/bt_addr
-    chmod 0640 /efs/bluetooth/bt_addr
+    chown bluetooth net_bt_stack /efs/bluetooth/bt_addr
+    chmod 0664 /efs/bluetooth/bt_addr
     chmod 0660 /sys/class/rfkill/rfkill0/state
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
@@ -640,7 +639,10 @@ on fs
     chmod 0660 /sys/class/input/input16/enabled
 
 # Permissions for Touchkey
-    chown system radio /sys/class/sec/sec_touchkey/brightness
+    chown system system /sys/class/sec/sec_touchkey/brightness
+    chmod 0664 /sys/class/sec/sec_touchkey/brightness
+    chown system system /sys/class/sec/sec_touchkey/touchkey_brightness
+    chmod 0664 /sys/class/sec/sec_touchkey/touchkey_brightness
     chown system radio /sys/class/sec/sec_touchkey/touchkey_firm_update
     chown system radio /sys/class/sec/sec_touchkey/touch_sensitivity
     chown system radio /sys/class/sec/sec_touchkey/glove_mode
@@ -915,9 +917,10 @@ on fs
     chmod 0660 /sys/class/sec/tsp/input/enabled
     chown system system /sys/class/sec/tsp/input/enabled
 
-    chmod 0660 /sys/class/sec_touchkey/input/enabled
+    chmod 0666 /sys/class/sec/sec_touchkey/input/enabled
     chown system system /sys/class/sec/sec_touchkey/input/enabled
-    chown system radio /sys/class/sec/sec_touchkey/brightness
+    chown system system /sys/class/sec/sec_touchkey/brightness
+    chmod 0664 /sys/class/sec/sec_touchkey/brightness
 
     chmod 0660 /sys/class/sec/sec_epen/input/enabled
     chown system system /sys/class/sec/sec_epen/input/enabled
@@ -1167,6 +1170,9 @@ on property:ro.debuggable=1
 
 # Use dirty_bytes in case of 64-bit AP: 60/20MB
 on property:sys.boot_completed=1
+    # KiroOS OTA update cleanup
+    setprop persist.sys.kiro_updating 0
+    rm /cache/kiro_updating
     write /proc/sys/vm/dirty_bytes 62914560
     write /proc/sys/vm/dirty_background_bytes 20971520
 	
@@ -1241,3 +1247,34 @@ service ipsec-daemon /system/bin/IPSecService
     socket ipsec_socket stream 660 system system
     user system
     group system net_raw inet net_admin
+
+# Restore Bluetooth MAC address from EFS partition
+service btfirmware /system/bin/sh /system/bin/init.btmac.sh
+    class core
+    user root
+    group root bluetooth system
+    oneshot
+
+# KiroOS Touchkey LED Reactive Property Triggers
+on property:persist.sys.touchkey_led=0
+    write /sys/class/sec/sec_touchkey/touchkey_brightness 0
+    write /sys/class/sec/sec_touchkey/brightness 0
+    write /sys/class/sec/sec_touchkey/input/enabled 0
+
+on property:persist.sys.touchkey_led=1
+    write /sys/class/sec/sec_touchkey/touchkey_brightness 1
+    write /sys/class/sec/sec_touchkey/brightness 1
+    write /sys/class/sec/sec_touchkey/input/enabled 1
+
+# KiroOS On-Screen Navbar Dynamic Property Triggers
+on property:persist.sys.qemu.mainkeys=0
+    setprop qemu.hw.mainkeys 0
+    write /sys/class/sec/sec_touchkey/input/enabled 0
+    write /sys/class/sec/sec_touchkey/touchkey_brightness 0
+    write /sys/class/sec/sec_touchkey/brightness 0
+
+on property:persist.sys.qemu.mainkeys=1
+    setprop qemu.hw.mainkeys 1
+    write /sys/class/sec/sec_touchkey/input/enabled 1
+    write /sys/class/sec/sec_touchkey/touchkey_brightness 1
+    write /sys/class/sec/sec_touchkey/brightness 1

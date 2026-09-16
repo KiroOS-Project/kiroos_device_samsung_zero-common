@@ -193,3 +193,14 @@ RIL_SET_TWO_MIC_CONTROL_WORKAROUND := true
 
 # inherit from the proprietary version
 -include vendor/samsung/zero-common/BoardConfigVendor.mk
+
+# ==============================================================================
+# Community Fixes: Camera HAL1 Legacy & Video Recording & Mali-T760 Framebuffers
+# ==============================================================================
+TARGET_HAS_LEGACY_CAMERA_HAL1 := true
+TARGET_CAMERASERVICE_CLOSES_NATIVE_HANDLES := true
+BOARD_NEEDS_MEMORYHEAPION := true
+
+NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
+BOARD_EGL_WORKAROUND_BUG_10194508 := true
+MAX_VIRTUAL_DISPLAY_DIMENSION := 2560

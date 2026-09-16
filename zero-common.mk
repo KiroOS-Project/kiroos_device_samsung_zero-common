@@ -46,6 +46,7 @@ $(call inherit-product-if-exists, frameworks/native/build/phone-xxxhdpi-3072-hwu
 
 # Permissions
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/system/media/bootanimation.zip:system/media/bootanimation.zip \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
@@ -89,10 +90,6 @@ PRODUCT_PACKAGES += \
     audio.usb.default \
     tinymix \
     libtinycompress
-
-# Browser
-PRODUCT_PACKAGES += \
-    Jelly
 
 # Camera
 PRODUCT_PACKAGES += \
@@ -178,8 +175,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
     audio_hal.force_voice_config=wide \
     ro.nfc.sec_hal=true \
     wifi.interface=wlan0 \
+    wifi.supplicant_scan_interval=180 \
     debug.hwc.force_gpu=1 \
-    ro.bq.gpu_to_cpu_unsupported=1
+    ro.bq.gpu_to_cpu_unsupported=1 \
+    ro.webview.provider=com.android.webview
     
 # media build properties
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -234,6 +233,7 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf
 
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/init.btmac.sh:system/bin/init.btmac.sh \
     $(LOCAL_PATH)/configs/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
     $(LOCAL_PATH)/configs/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
 
@@ -247,3 +247,6 @@ $(call inherit-product, hardware/samsung_slsi-cm/exynos7420/exynos7420.mk)
 
 # Get non-open-source specific aspects
 $(call inherit-product-if-exists, vendor/samsung/zero-common/zero-common-vendor.mk)
+
+# Google Apps (GApps) integration
+$(call inherit-product-if-exists, vendor/google/gapps.mk)
