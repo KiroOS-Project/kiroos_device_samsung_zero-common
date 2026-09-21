@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS: Kiro Phone is the system dialer and in-call UI -->
+<resources>
+    <string name="ui_default_package" translatable="false">com.kiroos.phone</string>
+    <string name="dialer_default_class" translatable="false">com.kiroos.phone.PhoneActivity</string>
+    <string name="incall_default_class" translatable="false">com.kiroos.phone.incall.KiroInCallService</string>
+</resources>
