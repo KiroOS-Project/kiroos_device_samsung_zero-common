@@ -1,0 +1,127 @@
+# KiroOS init, shared by the Galaxy S6 family (S6, S6 edge, S6 edge+).
+# Imported by init.samsungexynos7420.rc of both hardware common trees, after their own
+# "on fs" mount_all, so swapon_all below runs with /system mounted.
+
+on post-fs
+    # cfq idles waiting for more I/O, which only suits spinning disks; deadline gives UFS
+    # lower latency for less CPU. Per request I/O statistics are debug only.
+    write /sys/block/sda/queue/scheduler deadline
+    write /sys/block/sda/queue/iostats 0
+
+on fs
+    # zram swap (LZO); the size comes from the zramsize of each device's fstab
+    swapon_all /fstab.samsungexynos7420
+
+on boot
+    # Compressing idle apps into zram is cheaper than killing them (100 is this kernel's max)
+    write /proc/sys/vm/swappiness 100
+
+    # Touchkeys (S6 family capacitive keys)
+    chown system system /sys/class/sec/sec_touchkey/brightness
+    chmod 0660 /sys/class/sec/sec_touchkey/brightness
+    chown system system /sys/class/sec/sec_touchkey/touchkey_brightness
+    chmod 0660 /sys/class/sec/sec_touchkey/touchkey_brightness
+    chown system system /sys/class/sec/sec_touchkey/input/enabled
+    chmod 0660 /sys/class/sec/sec_touchkey/input/enabled
+
+    # Edge screen: touch IC edge handler (palm rejection on the curved sides)
+    chown system system /sys/class/sec/tsp/cmd
+    chmod 0660 /sys/class/sec/tsp/cmd
+
+# Battery profiles (Settings > Battery > Profiles), see /system/bin/kiroos_perf.sh
+service kiroos_perf /system/bin/kiroos_perf.sh
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
+on property:sys.boot_completed=1
+    start kiroos_perf
+    start kiroos_diag_boot
+
+on property:persist.sys.kiroos.perf=*
+    start kiroos_perf
+
+# Restore the Bluetooth MAC address from the EFS partition
+service btfirmware /system/bin/sh /system/bin/init.btmac.sh
+    class core
+    user root
+    group root bluetooth system
+    oneshot
+
+# Touchkey LED
+on property:persist.sys.touchkey_led=0
+    write /sys/class/sec/sec_touchkey/touchkey_brightness 0
+    write /sys/class/sec/sec_touchkey/brightness 0
+    write /sys/class/sec/sec_touchkey/input/enabled 0
+
+on property:persist.sys.touchkey_led=1
+    write /sys/class/sec/sec_touchkey/touchkey_brightness 1
+    write /sys/class/sec/sec_touchkey/brightness 1
+    write /sys/class/sec/sec_touchkey/input/enabled 1
+
+# On-screen navigation bar
+on property:persist.sys.qemu.mainkeys=0
+    setprop qemu.hw.mainkeys 0
+    write /sys/class/sec/sec_touchkey/input/enabled 0
+    write /sys/class/sec/sec_touchkey/touchkey_brightness 0
+    write /sys/class/sec/sec_touchkey/brightness 0
+
+on property:persist.sys.qemu.mainkeys=1
+    setprop qemu.hw.mainkeys 1
+    write /sys/class/sec/sec_touchkey/input/enabled 1
+    write /sys/class/sec/sec_touchkey/touchkey_brightness 1
+    write /sys/class/sec/sec_touchkey/brightness 1
+
+# Swipe up from the bottom wakes the screen (touch IC low power gesture), Settings > Display
+on property:persist.sys.kiroos.swipe_wake=1
+    write /sys/class/sec/tsp/cmd spay_enable,1
+
+on property:persist.sys.kiroos.swipe_wake=0
+    write /sys/class/sec/tsp/cmd spay_enable,0
+
+# Edge screen palm rejection (S6 edge / edge+): set_dead_zone of the STM touch IC
+# (fts and fts5ad56 drivers) makes it ignore touches on the curved sides: 3 = both edges,
+# 0 = none. Settings > Edge screen toggles it; ro.kiroos.edge marks edge devices.
+on property:persist.sys.kiroos.edge_reject=1 && property:ro.kiroos.edge=1
+    write /sys/class/sec/tsp/cmd set_dead_zone,3
+
+on property:persist.sys.kiroos.edge_reject=0 && property:ro.kiroos.edge=1
+    write /sys/class/sec/tsp/cmd set_dead_zone,0
+
+on property:sys.boot_completed=1 && property:ro.kiroos.edge=1
+    setprop sys.kiroos.edge_boot 1
+
+on property:sys.kiroos.edge_boot=1 && property:persist.sys.kiroos.edge_reject=1
+    write /sys/class/sec/tsp/cmd set_dead_zone,3
+
+# KiroOS local diagnostics, saved in internal storage (KiroOS/diagnostics)
+#   setprop debug.kiroos.diag snapshot   (logs, kernel, battery, memory, thermal)
+#   setprop debug.kiroos.diag monitor    (thermal/CPU/battery every 10 s for 10 minutes)
+service kiroos_diag /system/bin/kiroos_diag.sh snapshot
+    class late_start
+    user root
+    group root
+    disabled
+    oneshot
+
+service kiroos_diag_mon /system/bin/kiroos_diag.sh monitor
+    class late_start
+    user root
+    group root
+    disabled
+    oneshot
+
+service kiroos_diag_boot /system/bin/kiroos_diag.sh boot
+    class late_start
+    user root
+    group root
+    disabled
+    oneshot
+
+on property:debug.kiroos.diag=snapshot
+    start kiroos_diag
+
+on property:debug.kiroos.diag=monitor
+    start kiroos_diag_mon

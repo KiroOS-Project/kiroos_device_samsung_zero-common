@@ -1,0 +1,19 @@
+# KiroOS battery profiles (/system/bin/kiroos_perf.sh, started by init on
+# persist.sys.kiroos.perf changes): writes cpufreq / mp-cpufreq / Mali DVFS limits.
+type kiroos_perf, domain;
+type kiroos_perf_exec, exec_type, file_type;
+init_daemon_domain(kiroos_perf)
+
+allow kiroos_perf shell_exec:file rx_file_perms;
+allow kiroos_perf toolbox_exec:file rx_file_perms;
+allow kiroos_perf system_file:file rx_file_perms;
+allow kiroos_perf sysfs:dir r_dir_perms;
+allow kiroos_perf sysfs:file rw_file_perms;
+allow kiroos_perf sysfs_devices_system_cpu:dir r_dir_perms;
+allow kiroos_perf sysfs_devices_system_cpu:file rw_file_perms;
+set_prop(kiroos_perf, system_prop)
+
+# The rules above cover what the script touches; Mali and mp-cpufreq nodes are Samsung
+# specific sysfs, so like kiroos_diag the domain stays permissive rather than risk a
+# profile silently not applying. It only runs as a oneshot from init.
+permissive kiroos_perf;

@@ -352,18 +352,4 @@
     <!-- If true, the display will be shifted around in ambient mode. -->
     <bool name="config_enableBurnInProtection">true</bool>
 
-    <!-- Community Fix: intervallo scansione Wi-Fi disconnesso (180s = 180000ms) per prevenire battery drain -->
-    <integer translatable="false" name="config_wifi_framework_scan_interval">180000</integer>
-
-    <!-- KiroOS: Compact Essential Power Menu (Spegni e Riavvia only) -->
-    <string-array translatable="false" name="config_globalActionsList">
-        <item>power</item>
-        <item>restart</item>
-    </string-array>
-
-    <!-- KiroOS: Calibrated 12ms crisp haptic tap pattern -->
-    <integer-array name="config_keyboardTapVibePattern">
-        <item>12</item>
-    </integer-array>
-
 </resources>

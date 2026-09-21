@@ -46,6 +46,8 @@ setup_vendor "$DEVICE" "$VENDOR" "$CM_ROOT"
 # Copyright headers and guards
 write_headers
 
-write_makefiles "$MY_DIR"/../$DEVICE/device-proprietary-blobs.txt
+DEVICE_LIST="$MY_DIR"/../$DEVICE/proprietary-files.txt
+[ -f "$DEVICE_LIST" ] || DEVICE_LIST="$MY_DIR"/../$DEVICE/device-proprietary-blobs.txt
+write_makefiles "$DEVICE_LIST"
 
 write_footers

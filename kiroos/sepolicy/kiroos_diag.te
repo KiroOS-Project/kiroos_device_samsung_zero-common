@@ -1,0 +1,7 @@
+# KiroOS local diagnostics (/system/bin/kiroos_diag.sh, started by init on request).
+# It only reads logs and system state and writes them to internal storage; it collects
+# from many places (logcat, dmesg, dumpsys, sysfs), so the domain is permissive.
+type kiroos_diag, domain;
+type kiroos_diag_exec, exec_type, file_type;
+init_daemon_domain(kiroos_diag)
+permissive kiroos_diag;

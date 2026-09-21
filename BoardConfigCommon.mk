@@ -14,9 +14,12 @@
 # limitations under the License.
 #
 
-LOCAL_PATH := device/samsung/zero-common
+LOCAL_PATH := device/samsung/universal7420-common
 
 BOARD_VENDOR := samsung
+
+# KiroOS: OTA hooks (boot logo flashing), see releasetools.py
+TARGET_RELEASETOOLS_EXTENSIONS := $(LOCAL_PATH)
 
 # Include path
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
@@ -81,7 +84,7 @@ BOARD_USES_DT := true
 
 # Hardware
 BOARD_HARDWARE_CLASS += hardware/samsung/cmhw
-BOARD_HARDWARE_CLASS += device/samsung/zero-common/cmhw
+BOARD_HARDWARE_CLASS += device/samsung/universal7420-common/cmhw
 
 # HWCServices
 BOARD_USES_HWC_SERVICES := true
@@ -157,14 +160,15 @@ TARGET_NO_SENSOR_PERMISSION_CHECK := true
 TARGET_SEC_FP_HAL_VARIANT := bauth
 
 # Seccomp filters
-BOARD_SECCOMP_POLICY += device/samsung/zero-common/seccomp
+BOARD_SECCOMP_POLICY += device/samsung/universal7420-common/seccomp
 
 # Sepolicy
 BOARD_SEPOLICY_DIRS := $(LOCAL_PATH)/sepolicy
+BOARD_SEPOLICY_DIRS += $(LOCAL_PATH)/kiroos/sepolicy
 
 # TWRP
 ifneq ($(strip $(wildcard $(TOP)/bootable/recovery/variables.h)),)
--include device/samsung/zero-common/twrp.mk
+-include device/samsung/universal7420-common/twrp.mk
 endif
 
 # Bootanimation Dimensions
@@ -195,11 +199,8 @@ RIL_SET_TWO_MIC_CONTROL_WORKAROUND := true
 -include vendor/samsung/zero-common/BoardConfigVendor.mk
 
 # ==============================================================================
-# Community Fixes: Camera HAL1 Legacy & Video Recording & Mali-T760 Framebuffers
+# KiroOS: Mali-T760 framebuffers (camera stays on the vendor HAL3, like upstream)
 # ==============================================================================
-TARGET_HAS_LEGACY_CAMERA_HAL1 := true
-TARGET_CAMERASERVICE_CLOSES_NATIVE_HANDLES := true
-BOARD_NEEDS_MEMORYHEAPION := true
 
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 BOARD_EGL_WORKAROUND_BUG_10194508 := true

@@ -16,4 +16,6 @@
 
 key 158   BACK	VIRTUAL
 key 254 APP_SWITCH     VIRTUAL
+# KiroOS: screen-off swipe up gesture (fts SPAY event)
+key 143   WAKEUP
 

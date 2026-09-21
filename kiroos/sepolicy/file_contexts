@@ -1,0 +1,4 @@
+# KiroOS (S6 family)
+/dev/block/zram0                u:object_r:swap_block_device:s0
+/system/bin/kiroos_diag\.sh     u:object_r:kiroos_diag_exec:s0
+/system/bin/kiroos_perf\.sh     u:object_r:kiroos_perf_exec:s0

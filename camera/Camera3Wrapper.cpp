@@ -30,23 +30,10 @@ typedef struct wrapper_camera3_device {
     camera3_device_t *vendor;
 } wrapper_camera3_device_t;
 
-#define VENDOR_CALL_INT(device, func, ...) ({ \
-    wrapper_camera3_device_t *__wdev = (wrapper_camera3_device_t*) (device); \
-    int __ret = -EINVAL; \
-    if (__wdev && __wdev->vendor && __wdev->vendor->ops && __wdev->vendor->ops->func) { \
-        __ret = __wdev->vendor->ops->func(__wdev->vendor, ##__VA_ARGS__); \
-    } \
-    __ret; \
+#define VENDOR_CALL(device, func, ...) ({ \
+    wrapper_camera3_device_t *__wrapper_dev = (wrapper_camera3_device_t*) device; \
+    __wrapper_dev->vendor->ops->func(__wrapper_dev->vendor, ##__VA_ARGS__); \
 })
-
-#define VENDOR_CALL_VOID(device, func, ...) do { \
-    wrapper_camera3_device_t *__wdev = (wrapper_camera3_device_t*) (device); \
-    if (__wdev && __wdev->vendor && __wdev->vendor->ops && __wdev->vendor->ops->func) { \
-        __wdev->vendor->ops->func(__wdev->vendor, ##__VA_ARGS__); \
-    } \
-} while(0)
-
-#define VENDOR_CALL(device, func, ...) VENDOR_CALL_INT(device, func, ##__VA_ARGS__)
 
 #define CAMERA_ID(device) (((wrapper_camera3_device_t *)(device))->id)
 
@@ -143,15 +130,7 @@ static const camera_metadata_t *camera3_construct_default_request_settings(const
         return NULL;
 
     android::CameraMetadata metadata;
-    wrapper_camera3_device_t *wdev = (wrapper_camera3_device_t*) device;
-    if (!wdev || !wdev->vendor || !wdev->vendor->ops || !wdev->vendor->ops->construct_default_request_settings) {
-        return NULL;
-    }
-    const camera_metadata_t *vendor_settings = wdev->vendor->ops->construct_default_request_settings(wdev->vendor, type);
-    if (!vendor_settings) {
-        return NULL;
-    }
-    metadata = vendor_settings;
+    metadata = VENDOR_CALL(device, construct_default_request_settings, type);
     return camera3_fixup_construct_default_request_settings(metadata, type);
 }
 
@@ -174,7 +153,7 @@ static void camera3_get_metadata_vendor_tag_ops(const camera3_device *device, ve
     if (!device)
         return;
 
-    VENDOR_CALL_VOID(device, get_metadata_vendor_tag_ops, ops);
+    VENDOR_CALL(device, get_metadata_vendor_tag_ops, ops);
 }
 
 static void camera3_dump(const camera3_device_t *device, int fd)
@@ -185,7 +164,7 @@ static void camera3_dump(const camera3_device_t *device, int fd)
     if (!device)
         return;
 
-    VENDOR_CALL_VOID(device, dump, fd);
+    VENDOR_CALL(device, dump, fd);
 }
 
 static int camera3_flush(const camera3_device_t* device)

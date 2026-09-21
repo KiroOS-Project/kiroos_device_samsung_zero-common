@@ -1,0 +1,5 @@
+# KiroOS OTA: Settings downloads update packages to /data/lineageos_updates.
+# The install goes through RecoverySystem.installPackage -> uncrypt, which writes the
+# recovery command (BCB) to /misc (the OTA partition, see fstab).
+allow system_app ota_package_file:dir rw_dir_perms;
+allow system_app ota_package_file:file create_file_perms;

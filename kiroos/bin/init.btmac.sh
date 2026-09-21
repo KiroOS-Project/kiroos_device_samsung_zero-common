@@ -35,7 +35,7 @@ if [ -n "$MAC_SRC" ]; then
         echo "$FORMATTED_ADDR" > /data/misc/bluetooth/bdaddr
         chmod 0660 /data/misc/bluetooth/bdaddr
         chown bluetooth:net_bt_stack /data/misc/bluetooth/bdaddr
-        chmod 0664 /efs/bluetooth/bt_addr
+        chmod 0640 /efs/bluetooth/bt_addr
         chown bluetooth:net_bt_stack /efs/bluetooth/bt_addr
         echo "[BT] Bluetooth MAC ($FORMATTED_ADDR) restored from $MAC_SRC" > /dev/kmsg 2>/dev/null || true
     else

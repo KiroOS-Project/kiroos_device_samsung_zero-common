@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS framework defaults shared by the Galaxy S6 family. Memory killer thresholds are
+     per device (RAM and zram size differ), see each device's overlay. -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Wi-Fi scan interval while disconnected (180 s) to prevent battery drain -->
+    <integer translatable="false" name="config_wifi_framework_scan_interval">180000</integer>
+
+    <!-- Compact power menu: power off and restart only -->
+    <string-array translatable="false" name="config_globalActionsList">
+        <item>power</item>
+        <item>restart</item>
+    </string-array>
+
+    <!-- Calibrated 12 ms haptic tap -->
+    <integer-array name="config_keyboardTapVibePattern">
+        <item>12</item>
+    </integer-array>
+
+    <!-- Always-on display: shift the ambient content around (anti burn-in) -->
+    <bool name="config_enableBurnInProtection">true</bool>
+
+</resources>

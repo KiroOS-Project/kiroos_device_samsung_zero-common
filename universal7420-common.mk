@@ -14,17 +14,17 @@
 # limitations under the License.
 #
 
-LOCAL_PATH := device/samsung/zero-common
+LOCAL_PATH := device/samsung/universal7420-common
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Common Overlays
-DEVICE_PACKAGE_OVERLAYS += device/samsung/zero-common/overlay
+DEVICE_PACKAGE_OVERLAYS += device/samsung/universal7420-common/overlay
 
 ifneq ($(filter zerofltespr zeroltespr,$(TARGET_DEVICE)),)
-DEVICE_PACKAGE_OVERLAYS += device/samsung/zero-common/overlay-cdma
+DEVICE_PACKAGE_OVERLAYS += device/samsung/universal7420-common/overlay-cdma
 else
-DEVICE_PACKAGE_OVERLAYS += device/samsung/zero-common/overlay-gsm
+DEVICE_PACKAGE_OVERLAYS += device/samsung/universal7420-common/overlay-gsm
 endif
 
 # This device is 640dpi.  However the platform doesn't
@@ -46,7 +46,6 @@ $(call inherit-product-if-exists, frameworks/native/build/phone-xxxhdpi-3072-hwu
 
 # Permissions
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/system/media/bootanimation.zip:system/media/bootanimation.zip \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
@@ -175,11 +174,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     audio_hal.force_voice_config=wide \
     ro.nfc.sec_hal=true \
     wifi.interface=wlan0 \
-    wifi.supplicant_scan_interval=180 \
     debug.hwc.force_gpu=1 \
-    ro.bq.gpu_to_cpu_unsupported=1 \
-    ro.webview.provider=com.android.webview
-    
+    ro.bq.gpu_to_cpu_unsupported=1
+
 # media build properties
 PRODUCT_PROPERTY_OVERRIDES += \
 	media.sf.omx-plugin=libffmpeg_omx.so,libsomxcore.so 
@@ -233,7 +230,6 @@ PRODUCT_PACKAGES += \
     wpa_supplicant.conf
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/init.btmac.sh:system/bin/init.btmac.sh \
     $(LOCAL_PATH)/configs/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
     $(LOCAL_PATH)/configs/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
 
@@ -248,5 +244,5 @@ $(call inherit-product, hardware/samsung_slsi-cm/exynos7420/exynos7420.mk)
 # Get non-open-source specific aspects
 $(call inherit-product-if-exists, vendor/samsung/zero-common/zero-common-vendor.mk)
 
-# Google Apps (GApps) integration
-$(call inherit-product-if-exists, vendor/google/gapps.mk)
+# KiroOS layer shared by the whole S6 family
+$(call inherit-product, device/samsung/universal7420-common/kiroos/kiroos.mk)
