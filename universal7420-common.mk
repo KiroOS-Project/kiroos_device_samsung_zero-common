@@ -90,10 +90,9 @@ PRODUCT_PACKAGES += \
     tinymix \
     libtinycompress
 
-# Camera
+# Camera (the app is Kiro Camera, packages/apps/KiroOS)
 PRODUCT_PACKAGES += \
-    camera.exynos5 \
-    Snap
+    camera.exynos5
 
 # DTB    
 PRODUCT_PACKAGES += \
