@@ -82,19 +82,15 @@ on property:persist.sys.kiroos.swipe_wake=0
     write /sys/class/sec/tsp/cmd spay_enable,0
 
 # Edge screen palm rejection (S6 edge / edge+): set_dead_zone of the STM touch IC
-# (fts and fts5ad56 drivers) makes it ignore touches on the curved sides: 3 = both edges,
-# 0 = none. Settings > Edge screen toggles it; ro.kiroos.edge marks edge devices.
-on property:persist.sys.kiroos.edge_reject=1 && property:ro.kiroos.edge=1
-    write /sys/class/sec/tsp/cmd set_dead_zone,3
-
-on property:persist.sys.kiroos.edge_reject=0 && property:ro.kiroos.edge=1
-    write /sys/class/sec/tsp/cmd set_dead_zone,0
+# (fts and fts5ad56 drivers) makes it ignore touches that start on the curved sides.
+#   3 = both edges, 4 = right edge only (left off), 5 = left edge only (right off), 6 = off
+# Settings > Display > Edge screen sets persist.sys.kiroos.edge_zone; ro.kiroos.edge marks
+# the edge models. The touch IC forgets it on reset, so it is applied again after boot.
+on property:persist.sys.kiroos.edge_zone=* && property:ro.kiroos.edge=1
+    write /sys/class/sec/tsp/cmd set_dead_zone,${persist.sys.kiroos.edge_zone}
 
 on property:sys.boot_completed=1 && property:ro.kiroos.edge=1
-    setprop sys.kiroos.edge_boot 1
-
-on property:sys.kiroos.edge_boot=1 && property:persist.sys.kiroos.edge_reject=1
-    write /sys/class/sec/tsp/cmd set_dead_zone,3
+    write /sys/class/sec/tsp/cmd set_dead_zone,${persist.sys.kiroos.edge_zone}
 
 # KiroOS local diagnostics, saved in internal storage (KiroOS/diagnostics)
 #   setprop debug.kiroos.diag snapshot   (logs, kernel, battery, memory, thermal)
