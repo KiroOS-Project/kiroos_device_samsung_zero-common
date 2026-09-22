@@ -8,7 +8,7 @@
 # the thermal/IPA throttling keep working in every profile.
 #
 #   saving       A53 <= 1.2 GHz, A57 <= 1.2 GHz, GPU <= 420 MHz, conservative governor
-#   balanced     stock limits, interactive governor
+#   balanced     stock CPU limits, GPU >= 350 MHz, interactive governor
 #   performance  A53 >= 0.8 GHz, A57 >= 1.2 GHz floors, GPU >= 350 MHz
 #   extreme      A53 >= 1.3 GHz, A57 >= 1.7 GHz floors, GPU >= 544 MHz, performance governor
 #
@@ -56,7 +56,10 @@ case "$profile" in
     *)
         profile=balanced
         governor interactive
-        limits 1500000 2100000 400000 800000 0 0
+        # GPU floor 350 MHz: from its lowest step the Mali ramps up too late and scrolling
+        # janks (measured on the home: 13-35% janky frames -> 0-1%); the GPU is power-gated
+        # whenever nothing is drawn, so the floor only costs while the screen animates
+        limits 1500000 2100000 400000 800000 0 350
         ;;
 esac
 
