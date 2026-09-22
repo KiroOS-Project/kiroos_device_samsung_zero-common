@@ -31,6 +31,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
     log.tag.Sensors=F \
     persist.sys.kiroos.perf=balanced
 
+# First boot after a KiroOS update: only extract the apps instead of verifying every one
+# before the lock screen (about 3 minutes with ~100 apps on the S6). Apps verify what they
+# use at run time and background dexopt compiles them (speed-profile) while idle and
+# charging. Overrides the verify-profile of core_minimal.mk (default.prop).
+PRODUCT_PROPERTY_OVERRIDES += \
+    pm.dexopt.boot=verify-at-runtime
+
 # KiroOS v1.0 app suite (packages/apps/KiroOS/*) and the stock apps it replaces
 $(call inherit-product, packages/apps/KiroOS/kiroos_apps.mk)
 
