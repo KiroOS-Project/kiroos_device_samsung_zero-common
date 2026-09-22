@@ -38,6 +38,17 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     pm.dexopt.boot=verify-at-runtime
 
+# kAI on-device model: llama.cpp server + Qwen2.5 0.5B (built/fetched by kiro_kai_build.sh
+# into vendor/kiroos/kai, kept out of git for its size). kAI starts the server only while
+# it is open; without these files it falls back to the PC over USB.
+KIROOS_KAI := vendor/kiroos/kai
+ifneq ($(wildcard $(KIROOS_KAI)/kai_llama),)
+PRODUCT_COPY_FILES += \
+    $(KIROOS_KAI)/kai_llama:system/bin/kai_llama \
+    $(KIROOS_KAI)/qwen2.5-0.5b-instruct-q4_k_m.gguf:system/usr/share/kai/qwen2.5-0.5b-instruct-q4_k_m.gguf \
+    $(KIROOS_KAI)/LICENSE-Qwen2.5.txt:system/usr/share/kai/LICENSE.txt
+endif
+
 # KiroOS v1.0 app suite (packages/apps/KiroOS/*) and the stock apps it replaces
 $(call inherit-product, packages/apps/KiroOS/kiroos_apps.mk)
 
