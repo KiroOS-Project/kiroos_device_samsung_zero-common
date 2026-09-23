@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS: dialogs are the same floating card as the power menu
+     (rounded, #181818 in the dark theme) instead of a square black box -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:inset="16dp">
+    <shape android:shape="rectangle">
+        <corners android:radius="18dp" />
+        <solid android:color="?attr/colorBackgroundFloating" />
+    </shape>
+</inset>
