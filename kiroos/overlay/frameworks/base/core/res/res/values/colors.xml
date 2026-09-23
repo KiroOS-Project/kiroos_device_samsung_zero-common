@@ -9,4 +9,7 @@
     <drawable name="notification_template_divider">#29ffffff</drawable>
     <color name="background_material_dark">#ff000000</color>
     <color name="background_floating_material_dark">#ff181818</color>
+    <!-- KiroOS blue accent (switches, links, highlights) instead of the stock teal -->
+    <color name="accent_material_dark">#ff3987e5</color>
+    <color name="accent_material_light">#ff3987e5</color>
 </resources>
