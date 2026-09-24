@@ -1,0 +1,7 @@
+# KiroOS: compiles the apps once after a system update (/system/bin/kiroos_dexopt.sh,
+# started by init after boot). It drives the package manager through "cmd package compile"
+# like adb would, so it stays permissive like kiroos_diag rather than list every binder call.
+type kiroos_dexopt, domain;
+type kiroos_dexopt_exec, exec_type, file_type;
+init_daemon_domain(kiroos_dexopt)
+permissive kiroos_dexopt;

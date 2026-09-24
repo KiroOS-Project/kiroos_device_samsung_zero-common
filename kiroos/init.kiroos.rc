@@ -36,9 +36,18 @@ service kiroos_perf /system/bin/kiroos_perf.sh
     disabled
     oneshot
 
+# Compile the apps once after a system update (see /system/bin/kiroos_dexopt.sh)
+service kiroos_dexopt /system/bin/kiroos_dexopt.sh
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
 on property:sys.boot_completed=1
     start kiroos_perf
     start kiroos_diag_boot
+    start kiroos_dexopt
 
 on property:persist.sys.kiroos.perf=*
     start kiroos_perf
