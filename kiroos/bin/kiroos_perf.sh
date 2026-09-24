@@ -10,7 +10,11 @@
 #   saving       A53 <= 1.2 GHz, A57 <= 1.2 GHz, GPU <= 420 MHz, conservative governor
 #   balanced     stock CPU limits, GPU >= 350 MHz, interactive governor
 #   performance  A53 >= 0.8 GHz, A57 >= 1.2 GHz floors, GPU >= 350 MHz
-#   extreme      A53 >= 1.3 GHz, A57 >= 1.7 GHz floors, GPU >= 544 MHz, performance governor
+#   extreme      A53 >= 1.3 GHz, A57 >= 1.7 GHz floors, GPU >= 544 MHz, interactive governor
+#
+# Never the "performance" governor: on this kernel it ignores the frequency QoS once set, so a
+# cap taken with the screen off (1.2 GHz on the A53) stuck for good, and the hotplug driver only
+# brings the A57 cluster in when the A53 reach their maximum: extreme ran on 4 A53 at 1.2 GHz.
 #
 
 MP=/sys/devices/system/cpu/cpufreq/mp-cpufreq
@@ -50,7 +54,7 @@ case "$profile" in
         limits 1500000 2100000 800000 1200000 0 350
         ;;
     extreme)
-        governor performance
+        governor interactive
         limits 1500000 2100000 1296000 1704000 0 544
         ;;
     *)
