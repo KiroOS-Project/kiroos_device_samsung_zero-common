@@ -1,0 +1,6 @@
+# KiroOS Thermal / Battery Guardian: SystemUI (platform_app) and Settings (system_app) set
+# sys.kiroos.guard.* and init applies it (CPU/GPU caps via kiroos_perf, charging via the
+# Samsung battery driver).
+type kiroos_guard_prop, property_type;
+set_prop(platform_app, kiroos_guard_prop)
+set_prop(system_app, kiroos_guard_prop)

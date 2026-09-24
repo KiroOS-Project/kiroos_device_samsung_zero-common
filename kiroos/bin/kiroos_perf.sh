@@ -67,4 +67,23 @@ case "$profile" in
         ;;
 esac
 
+# Kiro Thermal Guardian (sys.kiroos.guard.thermal, set by SystemUI from the battery
+# temperature): lower caps on top of the profile, lifted as soon as the phone cools down.
+#   1  42 C: A53 <= 1.3 GHz, A57 <= 1.7 GHz, GPU <= 600 MHz (hardly noticeable)
+#   2  47 C: A53 <= 1.2 GHz, A57 <= 1.4 GHz, GPU <= 420 MHz
+#   3  50 C: A53 <= 1.0 GHz, A57 <= 1.0 GHz, GPU <= 350 MHz (cooling screen)
+stage=$(getprop sys.kiroos.guard.thermal)
+case "$stage" in
+    1) w $MP/cluster0_max_freq 1296000; w $MP/cluster1_max_freq 1704000; w $GPU/dvfs_max_lock 600 ;;
+    2) w $MP/cluster0_max_freq 1200000; w $MP/cluster1_max_freq 1400000; w $GPU/dvfs_max_lock 420 ;;
+    3) w $MP/cluster0_max_freq 1000000; w $MP/cluster1_max_freq 1000000; w $GPU/dvfs_max_lock 350 ;;
+esac
+# a floor above a cap would pin the clock: floors never above the caps
+if [ -n "$stage" ] && [ "$stage" != 0 ]; then
+    c0max=$(cat $MP/cluster0_max_freq); c1max=$(cat $MP/cluster1_max_freq)
+    [ "$(cat $MP/cluster0_min_freq)" -gt "$c0max" ] && w $MP/cluster0_min_freq "$c0max"
+    [ "$(cat $MP/cluster1_min_freq)" -gt "$c1max" ] && w $MP/cluster1_min_freq "$c1max"
+    w $GPU/dvfs_min_lock 0
+fi
+
 setprop sys.kiroos.perf.applied "$profile"

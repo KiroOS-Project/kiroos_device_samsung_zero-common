@@ -28,6 +28,26 @@ on boot
     chown system system /sys/class/sec/tsp/cmd
     chmod 0660 /sys/class/sec/tsp/cmd
 
+# kAI models: /data/kiroos/models holds links to the ones in the ROM (a model copied there with
+# the same name is used instead)
+on post-fs-data
+    mkdir /data/kiroos 0775 system system
+    mkdir /data/kiroos/models 0775 system system
+    symlink /system/usr/share/kai/smollm2-135m-instruct-q4_k_m.gguf /data/kiroos/models/smollm2-135m-instruct-q4_k_m.gguf
+    symlink /system/usr/share/kai/qwen2.5-0.5b-instruct-q4_k_m.gguf /data/kiroos/models/qwen2.5-0.5b-instruct-q4_k_m.gguf
+    symlink /system/usr/share/kai/llama-3.2-1b-instruct-q4_k_m.gguf /data/kiroos/models/llama-3.2-1b-instruct-q4_k_m.gguf
+    symlink /system/usr/share/kai/whisper-base-q5_1.bin /data/kiroos/models/whisper-base-q5_1.bin
+
+# Kiro Thermal Guardian / Battery Guardian (decided in SystemUI, KiroGuardian)
+on property:sys.kiroos.guard.thermal=*
+    start kiroos_perf
+
+# Battery Guardian (kernel batt_kiro_charge): 0 normal, 1 charging stops at 80% and restarts at
+# 77%, 2 bypass (the charger powers the phone, the battery is not charged). The charger and USB
+# stay connected in every mode.
+on property:sys.kiroos.guard.charge=*
+    write /sys/class/power_supply/battery/batt_kiro_charge ${sys.kiroos.guard.charge}
+
 # Battery profiles (Settings > Battery > Profiles), see /system/bin/kiroos_perf.sh
 service kiroos_perf /system/bin/kiroos_perf.sh
     class main
