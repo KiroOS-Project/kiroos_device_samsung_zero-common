@@ -64,6 +64,18 @@ service kiroos_dexopt /system/bin/kiroos_dexopt.sh
     disabled
     oneshot
 
+# KeurStore: an app it installed is compiled ahead of time
+service kiroos_optimize /system/bin/kiroos_dexopt.sh optimize
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+    seclabel u:r:kiroos_dexopt:s0
+
+on property:sys.kiroos.guard.optimize=*
+    start kiroos_optimize
+
 on property:sys.boot_completed=1
     start kiroos_perf
     start kiroos_diag_boot

@@ -9,6 +9,16 @@
 # "speed-profile" (only the code the profiles saw being used), at low priority.
 #
 
+# KeurStore: one app just installed (sys.kiroos.guard.optimize = its package), compiled now
+if [ "$1" = optimize ]; then
+    pkg=$(getprop sys.kiroos.guard.optimize)
+    case "$pkg" in
+        *[!A-Za-z0-9._]*|"") exit 0 ;;
+    esac
+    nice -n 10 cmd package compile -m speed "$pkg" >/dev/null 2>&1
+    exit 0
+fi
+
 build=$(getprop ro.build.date.utc)
 [ "$(getprop persist.sys.kiroos.dexopt_build)" = "$build" ] && exit 0
 
