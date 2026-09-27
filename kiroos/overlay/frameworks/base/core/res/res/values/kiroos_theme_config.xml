@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS: the system theme is dark unless Settings > Display > Theme says otherwise
+     (UiModeManager night mode: 2 = night / dark, 1 = day / light, 0 = automatic) -->
+<resources>
+    <integer name="config_defaultNightMode">2</integer>
+</resources>
