@@ -40,17 +40,20 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     pm.dexopt.boot=verify-at-runtime
 
-# kAI 1.1 on-device models ("Keng 1.5" Lite / Base / Pro) and the speech model, run inside
-# the kAI app by llama.cpp / whisper.cpp (JNI). Fetched by /home/icholas/kai/kiro_fetch_models.sh
-# into vendor/kiroos/kai, kept out of git for their size; /data/kiroos/models links to them.
+# kAI 1.1 on-device models ("Keng 1.5" Flash-Lite Live / Lite / Base / Pro) and the speech
+# model, run inside the kAI app by llama.cpp / whisper.cpp (JNI). Fetched by
+# /home/icholas/kai/kiro_fetch_models.sh and kiro_fetch_keng_live.sh into vendor/kiroos/kai, kept
+# out of git for their size; /data/kiroos/models links to them.
 KIROOS_KAI := vendor/kiroos/kai
 KIROOS_KAI_FILES := \
+    qwen3-0.6b-q4_k_m.gguf \
     smollm2-135m-instruct-q4_k_m.gguf \
     qwen2.5-0.5b-instruct-q4_k_m.gguf \
     llama-3.2-1b-instruct-q4_k_m.gguf \
     whisper-base-q5_1.bin \
     NOTICE.txt \
     LICENSE-Qwen2.5.txt \
+    LICENSE-Qwen3.txt \
     LICENSE-Llama-3.2.txt \
     LICENSE-whisper.txt
 PRODUCT_COPY_FILES += \
