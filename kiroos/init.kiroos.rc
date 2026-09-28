@@ -42,6 +42,10 @@ on post-fs-data
 on property:sys.kiroos.guard.thermal=*
     start kiroos_perf
 
+# screen off: no clock floors (every profile), see kiroos_perf.sh
+on property:sys.kiroos.guard.screen=*
+    start kiroos_perf
+
 # Battery Guardian (kernel batt_kiro_charge): 0 normal, 1 charging stops at 80% and restarts at
 # 77%, 2 bypass (the charger powers the phone, the battery is not charged). The charger and USB
 # stay connected in every mode.
@@ -162,3 +166,14 @@ on property:debug.kiroos.diag=snapshot
 
 on property:debug.kiroos.diag=monitor
     start kiroos_diag_mon
+
+# Doze reaches deep idle sooner (standby battery), see kiroos_doze.sh
+service kiroos_doze /system/bin/kiroos_doze.sh
+    class late_start
+    user root
+    seclabel u:r:kiroos_dexopt:s0
+    disabled
+    oneshot
+
+on property:sys.boot_completed=1
+    start kiroos_doze

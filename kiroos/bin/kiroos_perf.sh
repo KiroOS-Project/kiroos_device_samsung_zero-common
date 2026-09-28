@@ -11,6 +11,7 @@
 #   balanced     stock CPU limits, GPU >= 350 MHz, interactive governor
 #   performance  A53 >= 0.8 GHz, A57 >= 1.2 GHz floors, GPU >= 350 MHz
 #   extreme      A53 >= 1.3 GHz, A57 >= 1.7 GHz floors, GPU >= 544 MHz, interactive governor
+#   screen off   (any profile) no floors, A53 and A57 <= 1.2 GHz
 #
 # Never the "performance" governor: on this kernel it ignores the frequency QoS once set, so a
 # cap taken with the screen off (1.2 GHz on the A53) stuck for good, and the hotplug driver only
@@ -66,6 +67,13 @@ case "$profile" in
         limits 1500000 2100000 400000 800000 0 350
         ;;
 esac
+
+# Screen off (sys.kiroos.guard.screen=0, set by SystemUI): whatever the profile, no clock
+# floors and the CPU capped at 1.2 GHz. Music, calls and syncs need far less; the floors of
+# Performance / Extreme only make sense while the screen is on.
+if [ "$(getprop sys.kiroos.guard.screen)" = "0" ]; then
+    limits 1200000 1200000 400000 800000 0 0
+fi
 
 # Kiro Thermal Guardian (sys.kiroos.guard.thermal, set by SystemUI from the battery
 # temperature): lower caps on top of the profile, lifted as soon as the phone cools down.

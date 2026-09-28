@@ -17,6 +17,7 @@ PRODUCT_COPY_FILES += \
     $(KIROOS_COMMON)/bin/init.btmac.sh:system/bin/init.btmac.sh \
     $(KIROOS_COMMON)/bin/kiroos_perf.sh:system/bin/kiroos_perf.sh \
     $(KIROOS_COMMON)/bin/kiroos_dexopt.sh:system/bin/kiroos_dexopt.sh \
+    $(KIROOS_COMMON)/bin/kiroos_doze.sh:system/bin/kiroos_doze.sh \
     $(KIROOS_COMMON)/media/bootanimation.zip:system/media/bootanimation.zip
 
 # Vulkan 1.0: the Mali-T760 r12 vendor driver ships vulkan.exynos5.so (HAL) in both
