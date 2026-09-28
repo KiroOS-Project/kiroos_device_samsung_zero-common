@@ -35,7 +35,6 @@ on post-fs-data
     mkdir /data/kiroos/models 0775 system system
     symlink /system/usr/share/kai/qwen3-0.6b-q4_k_m.gguf /data/kiroos/models/qwen3-0.6b-q4_k_m.gguf
     symlink /system/usr/share/kai/smollm2-135m-instruct-q4_k_m.gguf /data/kiroos/models/smollm2-135m-instruct-q4_k_m.gguf
-    symlink /system/usr/share/kai/qwen2.5-0.5b-instruct-q4_k_m.gguf /data/kiroos/models/qwen2.5-0.5b-instruct-q4_k_m.gguf
     symlink /system/usr/share/kai/llama-3.2-1b-instruct-q4_k_m.gguf /data/kiroos/models/llama-3.2-1b-instruct-q4_k_m.gguf
     symlink /system/usr/share/kai/whisper-base-q5_1.bin /data/kiroos/models/whisper-base-q5_1.bin
 
