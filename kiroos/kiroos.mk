@@ -21,10 +21,10 @@ PRODUCT_COPY_FILES += \
     $(KIROOS_COMMON)/media/bootanimation.zip:system/media/bootanimation.zip
 
 # Vulkan 1.0: the Mali-T760 r12 vendor driver ships vulkan.exynos5.so (HAL) in both
-# families' blobs; declaring the features lets apps and the loader use it.
+# families' blobs; declaring the features lets apps and the loader use it. The version is
+# declared per device (device.mk): the S6 / S6 edge driver reports 1.0.26.
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:system/etc/permissions/android.hardware.vulkan.level.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.version-1_0_3.xml:system/etc/permissions/android.hardware.vulkan.version.xml
+    frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:system/etc/permissions/android.hardware.vulkan.level.xml
 
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.supplicant_scan_interval=180 \

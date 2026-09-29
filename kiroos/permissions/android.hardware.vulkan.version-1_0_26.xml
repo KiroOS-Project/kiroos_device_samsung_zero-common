@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS: the Vulkan version the Mali-T760 driver of the S6 / S6 edge blobs really implements.
+     Asked from the driver on the phone (vkGetPhysicalDeviceProperties): apiVersion 1.0.26.
+     The stock declaration said 1.0.3, so apps and the Play Store saw a version far below the
+     driver's. version = VK_MAKE_VERSION(1, 0, 26) = 4194330. -->
+<permissions>
+    <feature name="android.hardware.vulkan.version" version="4194330" />
+</permissions>
