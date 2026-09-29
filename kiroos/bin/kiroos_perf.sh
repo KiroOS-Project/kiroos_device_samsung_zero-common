@@ -76,6 +76,20 @@ limits() {
     w $GPU/dvfs_min_lock "$6"
 }
 
+# gpu <highspeed_clock MHz> <highspeed_load %> <down_staycount>
+# The Mali "interactive" DVFS (polled every 30 ms) climbs one step per poll when a level is
+# more than 85% busy (266 -> 700 MHz took ~180 ms, the first frames of a game at low clock) and
+# jumps to highspeed_clock only above highspeed_load (stock 420 MHz at 95%). down_staycount is
+# how many polls a busy level is held before stepping down: 1 made the clock see-saw between
+# two steps under a steady game load, which is uneven frame pacing. Same for Vulkan and GLES.
+gpu() {
+    w $GPU/highspeed_clock $1
+    w $GPU/highspeed_load $2
+    for c in 700 600 544 420; do
+        w $GPU/down_staycount "$c $3"
+    done
+}
+
 interactive
 
 # Tuning (timer 20 ms; a frame is 16.7 ms). Android sends a touch hint at most every 100 ms,
@@ -92,16 +106,19 @@ case "$profile" in
         tune 4   1000000 90 "80"                     40000                    40000  80000
         # GPU floor 266 MHz: from its 100 MHz idle step even a list scroll dropped frames
         limits 1200000 1200000 400000 800000 420 266
+        gpu 420 95 1
         ;;
     performance)
         tune 0   1296000 75 "60 1296000:75"          20000                    80000  200000
         tune 4   1500000 80 "60 1800000:75"          "20000 1800000:40000"    80000  200000
         limits 1500000 2100000 800000 1200000 0 350
+        gpu 600 80 3
         ;;
     extreme)
         tune 0   1500000 70 "50"                     20000                    80000  300000
         tune 4   1800000 75 "55"                     20000                    80000  300000
         limits 1500000 2100000 1296000 1704000 0 544
+        gpu 700 75 3
         ;;
     *)
         profile=balanced
@@ -111,6 +128,7 @@ case "$profile" in
         # janks (measured on the home: 13-35% janky frames -> 0-1%); the GPU is power-gated
         # whenever nothing is drawn, so the floor only costs while the screen animates
         limits 1500000 2100000 400000 800000 0 350
+        gpu 544 85 2
         ;;
 esac
 

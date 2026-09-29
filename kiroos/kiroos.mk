@@ -20,9 +20,10 @@ PRODUCT_COPY_FILES += \
     $(KIROOS_COMMON)/bin/kiroos_doze.sh:system/bin/kiroos_doze.sh \
     $(KIROOS_COMMON)/media/bootanimation.zip:system/media/bootanimation.zip
 
-# Vulkan 1.0: the Mali-T760 r12 vendor driver ships vulkan.exynos5.so (HAL) in both
-# families' blobs; declaring the features lets apps and the loader use it. The version is
-# declared per device (device.mk): the S6 / S6 edge driver reports 1.0.26.
+# Vulkan 1.0: the Mali-T760 driver (DDK r15p0) has Vulkan inside libGLES_mali.so, reached
+# through the vulkan.exynos5.so HAL link (in the zero blobs; zenltexx/vulkan/Android.mk for the
+# edge+); declaring the features lets apps and the loader use it. The version is declared per
+# device (device.mk): both the zero and the noble driver report 1.0.26.
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:system/etc/permissions/android.hardware.vulkan.level.xml
 
