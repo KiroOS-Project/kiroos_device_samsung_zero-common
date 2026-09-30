@@ -10,7 +10,7 @@
 #   saving       A53 <= 1.2 GHz, A57 <= 1.2 GHz, GPU 266-420 MHz, relaxed ramp
 #   balanced     stock CPU limits, GPU >= 350 MHz, quick ramp, touch boost held while touching
 #   performance  A53 >= 0.8 GHz, A57 >= 1.2 GHz floors, GPU >= 350 MHz, fast ramp
-#   extreme      A53 >= 1.3 GHz, A57 >= 1.7 GHz floors, GPU >= 544 MHz, fastest ramp
+#   extreme      A53 >= 1.3 GHz, A57 >= 1.7 GHz floors, GPU 544-772 MHz, fastest ramp
 #   screen off   (any profile) no floors, A53 and A57 <= 1.2 GHz
 #
 # Every profile runs the interactive governor, only its tuning changes. Never switch governor:
@@ -76,16 +76,19 @@ limits() {
     w $GPU/dvfs_min_lock "$6"
 }
 
-# gpu <highspeed_clock MHz> <highspeed_load %> <down_staycount>
+# gpu <highspeed_clock MHz> <highspeed_load %> <down_staycount> <max clock MHz>
 # The Mali "interactive" DVFS (polled every 30 ms) climbs one step per poll when a level is
 # more than 85% busy (266 -> 700 MHz took ~180 ms, the first frames of a game at low clock) and
 # jumps to highspeed_clock only above highspeed_load (stock 420 MHz at 95%). down_staycount is
 # how many polls a busy level is held before stepping down: 1 made the clock see-saw between
 # two steps under a steady game load, which is uneven frame pacing. Same for Vulkan and GLES.
+# The max clock (kernel kiro_max_clock_limit, device tree 700) lets a GPU saturated at 700 MHz
+# step up to 772 MHz; Samsung's hardware counter boost that reached it skips compute (OpenCL).
 gpu() {
+    w $GPU/kiro_max_clock_limit $4
     w $GPU/highspeed_clock $1
     w $GPU/highspeed_load $2
-    for c in 700 600 544 420; do
+    for c in 772 700 600 544 420; do
         w $GPU/down_staycount "$c $3"
     done
 }
@@ -106,19 +109,19 @@ case "$profile" in
         tune 4   1000000 90 "80"                     40000                    40000  80000
         # GPU floor 266 MHz: from its 100 MHz idle step even a list scroll dropped frames
         limits 1200000 1200000 400000 800000 420 266
-        gpu 420 95 1
+        gpu 420 95 1 700
         ;;
     performance)
         tune 0   1296000 75 "60 1296000:75"          20000                    80000  200000
         tune 4   1500000 80 "60 1800000:75"          "20000 1800000:40000"    80000  200000
         limits 1500000 2100000 800000 1200000 0 350
-        gpu 600 80 3
+        gpu 600 80 3 700
         ;;
     extreme)
         tune 0   1500000 70 "50"                     20000                    80000  300000
         tune 4   1800000 75 "55"                     20000                    80000  300000
         limits 1500000 2100000 1296000 1704000 0 544
-        gpu 700 75 3
+        gpu 700 75 3 772
         ;;
     *)
         profile=balanced
@@ -128,7 +131,7 @@ case "$profile" in
         # janks (measured on the home: 13-35% janky frames -> 0-1%); the GPU is power-gated
         # whenever nothing is drawn, so the floor only costs while the screen animates
         limits 1500000 2100000 400000 800000 0 350
-        gpu 544 85 2
+        gpu 544 85 2 700
         ;;
 esac
 

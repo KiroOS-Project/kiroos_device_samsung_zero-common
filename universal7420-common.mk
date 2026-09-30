@@ -165,9 +165,11 @@ PRODUCT_PACKAGES += \
     power.universal7420
 
 # common build properties
+# KiroOS: OpenGL ES 3.2, what the Mali-T760 r15p0 driver reports ("OpenGL ES 3.2
+# v1.r15p0", with the AEP feature declared above); 3.1 hid it from the apps that ask
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.sf.lcd_density=640 \
-    ro.opengles.version=196609 \
+    ro.opengles.version=196610 \
     ro.chipname=exynos7420 \
     af.fast_track_multiplier=1 \
     audio_hal.force_voice_config=wide \
