@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KiroOS: the system theme is dark unless Settings > Display > Theme says otherwise
-     (UiModeManager night mode: 2 = night / dark, 1 = day / light, 0 = automatic) -->
+<!-- KiroOS: a new phone starts on the light theme; Settings > Display > Theme and the setup
+     change it (UiModeManager night mode: 2 = night / dark, 1 = day / light, 0 = automatic).
+     A phone set up on 2.1, when dark was the default, keeps dark: UiModeManagerService. -->
 <resources>
-    <integer name="config_defaultNightMode">2</integer>
+    <integer name="config_defaultNightMode">1</integer>
 </resources>
