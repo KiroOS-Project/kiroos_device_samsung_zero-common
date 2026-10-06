@@ -346,8 +346,10 @@
     <bool name="config_lidControlsSleep">true</bool>
     
     <!-- If enabled, capacitive keys will only light up when pressed.
-         Otherwise, the buttons will light up whenever the user interacts with the device -->
-    <bool name="config_buttonLightOnKeypressOnly">true</bool>
+         Otherwise, the buttons will light up whenever the user interacts with the device.
+         KiroOS: like the stock firmware, the keys light up with any touch and go dark a few
+         seconds after the last one (button backlight timeout). -->
+    <bool name="config_buttonLightOnKeypressOnly">false</bool>
     
     <!-- If true, the display will be shifted around in ambient mode. -->
     <bool name="config_enableBurnInProtection">true</bool>

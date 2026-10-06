@@ -95,29 +95,25 @@ service btfirmware /system/bin/sh /system/bin/init.btmac.sh
     group root bluetooth system
     oneshot
 
-# Touchkey LED
+# Touchkey LED. "brightness" is the LED on/off command of the touchkey IC; PowerManager turns
+# it on with use and off after the button timeout (lights HAL). "touchkey_brightness" is the
+# LED LDO voltage in mV (fixed 3.3 V), never written as an on/off value.
 on property:persist.sys.touchkey_led=0
-    write /sys/class/sec/sec_touchkey/touchkey_brightness 0
     write /sys/class/sec/sec_touchkey/brightness 0
     write /sys/class/sec/sec_touchkey/input/enabled 0
 
 on property:persist.sys.touchkey_led=1
-    write /sys/class/sec/sec_touchkey/touchkey_brightness 1
-    write /sys/class/sec/sec_touchkey/brightness 1
     write /sys/class/sec/sec_touchkey/input/enabled 1
 
 # On-screen navigation bar
 on property:persist.sys.qemu.mainkeys=0
     setprop qemu.hw.mainkeys 0
     write /sys/class/sec/sec_touchkey/input/enabled 0
-    write /sys/class/sec/sec_touchkey/touchkey_brightness 0
     write /sys/class/sec/sec_touchkey/brightness 0
 
 on property:persist.sys.qemu.mainkeys=1
     setprop qemu.hw.mainkeys 1
     write /sys/class/sec/sec_touchkey/input/enabled 1
-    write /sys/class/sec/sec_touchkey/touchkey_brightness 1
-    write /sys/class/sec/sec_touchkey/brightness 1
 
 # Swipe up from the bottom wakes the screen (touch IC low power gesture), Settings > Display
 on property:persist.sys.kiroos.swipe_wake=1
