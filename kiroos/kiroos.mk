@@ -41,6 +41,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     pm.dexopt.boot=verify-at-runtime
 
+# Beta 3: the KiroOS recovery is restored at boot if something else replaced it (init.kiroos.rc;
+# 1 keeps another recovery, for developers)
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.sys.kiroos.keeprecovery=0
+
 # kAI 1.1 on-device models ("Keng 1.5" Flash-Lite Live / Lite / Pro) and the speech
 # model, run inside the kAI app by llama.cpp / whisper.cpp (JNI). Fetched by
 # /home/icholas/kai/kiro_fetch_models.sh and kiro_fetch_keng_live.sh into vendor/kiroos/kai, kept

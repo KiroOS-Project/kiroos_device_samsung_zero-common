@@ -61,6 +61,13 @@ on property:persist.sys.kiroos.batt_cap=*
 on property:sys.kiroos.guard.battcap=*
     start kiroos_battcap
 
+# Beta 3: the KiroOS recovery comes back by itself. install-recovery.sh checks the RECOVERY
+# partition at every boot and rebuilds it from boot + recovery-from-boot.p when it differs (TWRP
+# flashed over it, or an update that changed it), so KiroOS Update's installs always find it.
+# A developer who wants to keep another recovery: setprop persist.sys.kiroos.keeprecovery 1
+on property:sys.boot_completed=1 && property:persist.sys.kiroos.keeprecovery=0
+    start flash_recovery
+
 service kiroos_battcap /system/bin/kiroos_perf.sh battcap
     class main
     user root

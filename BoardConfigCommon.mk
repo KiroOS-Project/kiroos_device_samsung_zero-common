@@ -134,6 +134,15 @@ BOARD_RECOVERYIMAGE_PARTITION_SIZE := 35651584
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3656552448
 #BOARD_USERDATAIMAGE_PARTITION_SIZE := 59183980544 #64GB
 
+# KiroOS Beta 3: the framework boot image (boot.art/boot.oat, both ABIs) is compiled at build
+# time into /system/framework/arm*, position independent so it is used in place. Without it
+# every phone compiled it into /data/dalvik-cache on the first boot after each update: minutes
+# before the home screen. Apps stay as they were (verified at boot, compiled by
+# kiroos_dexopt.sh), so /system grows by the boot image only (~150 MB).
+WITH_DEXPREOPT := true
+WITH_DEXPREOPT_BOOT_IMG_ONLY := true
+WITH_DEXPREOPT_PIC := true
+
 # Platform
 TARGET_BOARD_PLATFORM := exynos5
 TARGET_SOC := exynos7420

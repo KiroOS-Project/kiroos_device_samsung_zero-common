@@ -22,11 +22,14 @@ fi
 build=$(getprop ro.build.date.utc)
 [ "$(getprop persist.sys.kiroos.dexopt_build)" = "$build" ] && exit 0
 
-# let the boot settle (launcher, SystemUI, services) before taking CPU time
-sleep 120
+# let the boot settle (launcher, SystemUI, services) before taking CPU time. Beta 3: half a
+# minute, since the boot itself now prepares only the apps that run at once (the others run
+# from their APK until they are compiled here)
+sleep 30
 
-for p in com.android.systemui com.kiroos.home com.android.settings com.kiroos.phone \
-        com.kiroos.messages com.kiroos.kai com.android.inputmethod.latin com.kiroos.camera; do
+# (SystemUI, Kiro Home, the keyboard and Settings are compiled with "speed" during the boot
+# itself since Beta 3, under the boot animation's bar: PackageManagerService kiroBootCompileUi)
+for p in com.kiroos.phone com.kiroos.messages com.kiroos.kai com.kiroos.camera; do
     nice -n 10 cmd package compile -m speed "$p" >/dev/null 2>&1
 done
 nice -n 10 cmd package compile -m speed-profile -a >/dev/null 2>&1
