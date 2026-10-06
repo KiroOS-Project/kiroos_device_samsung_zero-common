@@ -52,6 +52,22 @@ on property:sys.kiroos.guard.screen=*
 on property:sys.kiroos.guard.charge=*
     write /sys/class/power_supply/battery/batt_kiro_charge ${sys.kiroos.guard.charge}
 
+# The battery's real capacity (kernel batt_kiro_cap, learned when the battery runs empty after a
+# full charge): saved by kiroos_perf.sh when KiroGuardian sees the charge drop, given back to the
+# kernel at every boot.
+on property:persist.sys.kiroos.batt_cap=*
+    write /sys/class/power_supply/battery/batt_kiro_cap ${persist.sys.kiroos.batt_cap}
+
+on property:sys.kiroos.guard.battcap=*
+    start kiroos_battcap
+
+service kiroos_battcap /system/bin/kiroos_perf.sh battcap
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
 # Battery profiles (Settings > Battery > Profiles), see /system/bin/kiroos_perf.sh
 service kiroos_perf /system/bin/kiroos_perf.sh
     class main

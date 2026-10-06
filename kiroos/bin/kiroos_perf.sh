@@ -26,6 +26,18 @@ GPU=/sys/devices/14ac0000.mali
 
 w() { [ -w "$1" ] && echo "$2" > "$1"; }
 
+# Beta 3: the battery's real capacity (kernel battery/batt_kiro_cap, learned when the battery
+# runs empty after a full charge) is kept in persist.sys.kiroos.batt_cap; init gives it back at
+# every boot. Run as "kiroos_perf.sh battcap" by init when KiroGuardian sees the charge drop.
+if [ "$1" = battcap ]; then
+    cap=$(cat /sys/class/power_supply/battery/batt_kiro_cap 2>/dev/null)
+    if [ -n "$cap" ] && [ "$cap" -gt 0 ] && [ "$cap" != "$(getprop persist.sys.kiroos.batt_cap)" ]; then
+        setprop persist.sys.kiroos.batt_cap "$cap"
+        log -t kiroos_perf "battery capacity $cap mAh saved"
+    fi
+    exit 0
+fi
+
 # Interactive on both clusters. Only if something else left another governor: then the nodes
 # were just recreated root-only, give them back to the power HAL (system) like init.power.rc.
 interactive() {
