@@ -1,2 +1,4 @@
 # KiroOS guardians: SystemUI and Settings ask init to act on the hardware
 sys.kiroos.guard.        u:object_r:kiroos_guard_prop:s0
+# KiroOS Screen Recorder: keep playing while the device audio is recorded
+sys.kiroos.rec.          u:object_r:kiroos_rec_prop:s0

@@ -1,0 +1,6 @@
+# KiroOS Screen Recorder (platform_app) sets sys.kiroos.rec.local while it records the device
+# audio, and the audio policy in audioserver reads it to keep the phone playing (a copy of the
+# media to the remote submix instead of all of it; frameworks/av enginedefault Engine.cpp).
+type kiroos_rec_prop, property_type;
+set_prop(platform_app, kiroos_rec_prop)
+get_prop(audioserver, kiroos_rec_prop)
