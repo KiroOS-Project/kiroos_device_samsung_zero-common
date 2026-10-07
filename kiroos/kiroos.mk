@@ -29,7 +29,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.supplicant_scan_interval=180 \
-    ro.webview.provider=com.android.webview \
+    ro.webview.provider=com.kiroos.webview \
     log.tag.RILD=F \
     log.tag.Sensors=F \
     persist.sys.kiroos.perf=balanced
