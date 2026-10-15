@@ -58,7 +58,13 @@ on property:sys.kiroos.guard.charge=*
 on property:persist.sys.kiroos.batt_cap=*
     write /sys/class/power_supply/battery/batt_kiro_cap ${persist.sys.kiroos.batt_cap}
 
-# Beta 4: the battery's cycles (kernel batt_kiro_cycle), saved by kiroos_perf.sh, given back at boot
+# Beta 4: the battery's cycles (kernel batt_kiro_cycle, % used), saved by kiroos_perf.sh, given
+# back at boot. The battery's past comes from Samsung's own count, kept in /efs from the stock
+# firmware (% discharged over the battery's life, cycles = /100): only read, never written. The
+# kernel keeps the highest value written, so the order of the two does not matter.
+on post-fs-data
+    copy /efs/FactoryApp/batt_discharge_level /sys/class/power_supply/battery/batt_kiro_cycle
+
 on property:persist.sys.kiroos.batt_cycle=*
     write /sys/class/power_supply/battery/batt_kiro_cycle ${persist.sys.kiroos.batt_cycle}
 
