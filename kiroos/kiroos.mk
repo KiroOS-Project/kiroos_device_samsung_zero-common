@@ -27,6 +27,21 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:system/etc/permissions/android.hardware.vulkan.level.xml
 
+# Beta 4: KiroOS's own sounds (output/sounds/synth.mjs, synthesized, no samples): ringtone
+# Kiro Aurora, notifications Kiro Glass / Drop / Spark, alarm Kiro Sunrise. The defaults go in
+# default.prop, read before build.prop, so they win over the LineageOS ones (Orion, Argon,
+# Hassium) set by vendor/cm, which stay available.
+PRODUCT_COPY_FILES += \
+    $(KIROOS_COMMON)/media/audio/ringtones/Kiro_Aurora.ogg:system/media/audio/ringtones/Kiro_Aurora.ogg \
+    $(KIROOS_COMMON)/media/audio/alarms/Kiro_Sunrise.ogg:system/media/audio/alarms/Kiro_Sunrise.ogg \
+    $(KIROOS_COMMON)/media/audio/notifications/Kiro_Glass.ogg:system/media/audio/notifications/Kiro_Glass.ogg \
+    $(KIROOS_COMMON)/media/audio/notifications/Kiro_Drop.ogg:system/media/audio/notifications/Kiro_Drop.ogg \
+    $(KIROOS_COMMON)/media/audio/notifications/Kiro_Spark.ogg:system/media/audio/notifications/Kiro_Spark.ogg
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    ro.config.ringtone=Kiro_Aurora.ogg \
+    ro.config.notification_sound=Kiro_Glass.ogg \
+    ro.config.alarm_alert=Kiro_Sunrise.ogg
+
 # Beta 4: low latency audio. The fast output (256 frames, FastMixer) and the fast capture
 # (audio_policy.conf "fast" input, FastCapture) were there, but without the feature apps
 # (games, instruments, OpenSL ES / Oboe audio) never took the fast path.

@@ -78,6 +78,17 @@ on property:sys.kiroos.guard.battcap=*
 on property:sys.boot_completed=1 && property:persist.sys.kiroos.keeprecovery=0
     start flash_recovery
 
+# Beta 4: app caches cleared at every boot, a minute after it completed (kiroos_perf.sh)
+on property:sys.boot_completed=1
+    start kiroos_trimcache
+
+service kiroos_trimcache /system/bin/kiroos_perf.sh trimcache
+    class main
+    user root
+    group root system
+    disabled
+    oneshot
+
 service kiroos_battcap /system/bin/kiroos_perf.sh battcap
     class main
     user root

@@ -34,6 +34,18 @@ if [ -n "$cyc" ] && [ "$cyc" -gt "$(getprop persist.sys.kiroos.batt_cycle 0)" ] 
     setprop persist.sys.kiroos.batt_cycle "$cyc"
 fi
 
+# Beta 4: every app's cache is cleared at each boot (init runs "kiroos_perf.sh trimcache" a
+# minute after boot_completed, so the boot itself is not slowed). The package manager's own
+# trim deletes the cache dirs of every app (never data, never the dalvik/ART code cache).
+if [ "$1" = trimcache ]; then
+    sleep 60
+    before=$(df /data | tail -1 | awk '{print $4}')
+    pm trim-caches 999G >/dev/null 2>&1
+    after=$(df /data | tail -1 | awk '{print $4}')
+    log -t kiroos_perf "app caches cleared (free /data: $before -> $after)"
+    exit 0
+fi
+
 # Beta 3: the battery's real capacity (kernel battery/batt_kiro_cap, learned when the battery
 # runs empty after a full charge) is kept in persist.sys.kiroos.batt_cap; init gives it back at
 # every boot. Run as "kiroos_perf.sh battcap" by init when KiroGuardian sees the charge drop.
@@ -115,6 +127,13 @@ gpu() {
 
 interactive
 
+# The A57 top clock: 2.2 GHz on a chip fused for it (Beta 4 light overclock), else 2.1 GHz
+A57MAX=2100000
+for f in $(cat $MP/cluster1_freq_table 2>/dev/null); do
+    case "$f" in *[!0-9]*) continue ;; esac
+    [ "$f" -gt "$A57MAX" ] && A57MAX=$f
+done
+
 # Tuning (timer 20 ms; a frame is 16.7 ms). Android sends a touch hint at most every 100 ms,
 # so a boostpulse of 120 ms or more holds the boost for as long as the finger moves; below
 # that the clock dipped between hints, which is the stutter of a scroll. min_sample_time is
@@ -134,13 +153,13 @@ case "$profile" in
     performance)
         tune 0   1296000 75 "60 1296000:75"          20000                    80000  200000
         tune 4   1500000 80 "60 1800000:75"          "20000 1800000:40000"    80000  200000
-        limits 1500000 2100000 800000 1200000 0 350
+        limits 1500000 $A57MAX 800000 1200000 0 350
         gpu 600 80 3 700
         ;;
     extreme)
         tune 0   1500000 70 "50"                     20000                    80000  300000
         tune 4   1800000 75 "55"                     20000                    80000  300000
-        limits 1500000 2100000 1296000 1704000 0 544
+        limits 1500000 $A57MAX 1296000 1704000 0 544
         gpu 700 75 3 772
         ;;
     *)
@@ -150,7 +169,7 @@ case "$profile" in
         # GPU floor 350 MHz: from its lowest step the Mali ramps up too late and scrolling
         # janks (measured on the home: 13-35% janky frames -> 0-1%); the GPU is power-gated
         # whenever nothing is drawn, so the floor only costs while the screen animates
-        limits 1500000 2100000 400000 800000 0 350
+        limits 1500000 $A57MAX 400000 800000 0 350
         gpu 544 85 2 700
         ;;
 esac
