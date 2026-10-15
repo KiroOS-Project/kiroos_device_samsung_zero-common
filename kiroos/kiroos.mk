@@ -27,6 +27,12 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:system/etc/permissions/android.hardware.vulkan.level.xml
 
+# Beta 4: low latency audio. The fast output (256 frames, FastMixer) and the fast capture
+# (audio_policy.conf "fast" input, FastCapture) were there, but without the feature apps
+# (games, instruments, OpenSL ES / Oboe audio) never took the fast path.
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml
+
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.supplicant_scan_interval=180 \
     ro.webview.provider=com.kiroos.webview \
