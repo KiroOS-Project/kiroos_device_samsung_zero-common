@@ -82,6 +82,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf
 
+# KiroOS Beta 4: the AOSP effects list with the KiroOS Equalizer (read before
+# /system/etc/audio_effects.conf); the edge+ has its own (noblelte-common)
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/kiroos/configs/audio_effects.conf:system/vendor/etc/audio_effects.conf
+
 PRODUCT_PACKAGES += \
     audio.primary.universal7420 \
     audio.a2dp.default \
