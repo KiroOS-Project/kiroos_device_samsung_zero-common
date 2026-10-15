@@ -26,6 +26,14 @@ GPU=/sys/devices/14ac0000.mali
 
 w() { [ -w "$1" ] && echo "$2" > "$1"; }
 
+# Beta 4: the battery's cycles (kernel battery/batt_kiro_cycle, % used, 100 = one cycle) are kept
+# in persist.sys.kiroos.batt_cycle, which init gives back at every boot. Saved on every run (the
+# screen turning on or off, a profile change, the charge dropping), only when it changed.
+cyc=$(cat /sys/class/power_supply/battery/batt_kiro_cycle 2>/dev/null)
+if [ -n "$cyc" ] && [ "$cyc" -gt "$(getprop persist.sys.kiroos.batt_cycle 0)" ] 2>/dev/null; then
+    setprop persist.sys.kiroos.batt_cycle "$cyc"
+fi
+
 # Beta 3: the battery's real capacity (kernel battery/batt_kiro_cap, learned when the battery
 # runs empty after a full charge) is kept in persist.sys.kiroos.batt_cap; init gives it back at
 # every boot. Run as "kiroos_perf.sh battcap" by init when KiroGuardian sees the charge drop.
