@@ -105,6 +105,15 @@ TARGET_UNIFIED_DEVICE := true
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
+# KiroOS Beta 4: the kernel builds with GCC 8.4 (Ubuntu's arm64 cross compiler, unpacked by
+# /home/icholas/kai/gcc8_fetch.sh, wrappers by k8_build.sh) when KIROOS_KERNEL_GCC8_ON=true.
+# Off: on the S6 that kernel booted, then rebooted by itself shortly after (2026-10-15); the
+# release stays on the AOSP GCC 4.9 until it is understood.
+KIROOS_KERNEL_GCC8 := /home/icholas/toolchains/gcc8-wrap
+ifeq ($(KIROOS_KERNEL_GCC8_ON)$(wildcard $(KIROOS_KERNEL_GCC8)/aarch64-linux-gnu-gcc),true$(KIROOS_KERNEL_GCC8)/aarch64-linux-gnu-gcc)
+KERNEL_TOOLCHAIN := $(KIROOS_KERNEL_GCC8)
+TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-gnu-
+endif
 BOARD_KERNEL_BASE := 0x10000000
 # BOARD_KERNEL_CMDLINE := commandline from boot.img by bootloader
 BOARD_KERNEL_PAGESIZE := 2048
