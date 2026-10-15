@@ -39,9 +39,10 @@ fi
 # trim deletes the cache dirs of every app (never data, never the dalvik/ART code cache).
 if [ "$1" = trimcache ]; then
     sleep 60
-    before=$(df /data | tail -1 | awk '{print $4}')
+    # (no awk on the phone: the free KB is the 4th field of df's last line)
+    set -- $(df /data | tail -1); before=$4
     pm trim-caches 999G >/dev/null 2>&1
-    after=$(df /data | tail -1 | awk '{print $4}')
+    set -- $(df /data | tail -1); after=$4
     log -t kiroos_perf "app caches cleared (free /data: $before -> $after)"
     exit 0
 fi
