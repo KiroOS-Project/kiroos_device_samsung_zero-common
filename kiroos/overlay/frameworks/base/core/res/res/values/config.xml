@@ -17,6 +17,10 @@
         <item>12</item>
     </integer-array>
 
+    <!-- KiroOS Beta 4.1: the Kiro Lock / Unlock sounds are mastered for the lock screen, no
+         extra cut on top (stock -6 dB made them hard to hear) -->
+    <integer name="config_lockSoundVolumeDb">0</integer>
+
     <!-- KiroOS Beta 4.1 haptics: one clean pulse per action, never a buzz. The S6's motor needs
          about 10 ms to spin up, so taps are 10-14 ms (crisp, felt, not heard) and the long press
          is one firmer 24 ms pulse. The stock patterns were double pulses (10 + 30 ms with a pause)

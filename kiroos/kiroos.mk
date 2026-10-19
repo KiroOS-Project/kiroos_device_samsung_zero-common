@@ -42,6 +42,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(KIROOS_COMMON)/media/audio/ui/Kiro_Lock.ogg:system/media/audio/ui/Kiro_Lock.ogg \
     $(KIROOS_COMMON)/media/audio/ui/Kiro_Unlock.ogg:system/media/audio/ui/Kiro_Unlock.ogg
+# Beta 4.1: media volume in 30 steps (finer, and the lowest step is much quieter than the old
+# 1 of 15); AudioService scales the saved volumes once (kiroRescaleMusicVolumes)
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    ro.config.media_vol_steps=30
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     ro.config.ringtone=Kiro_Aurora.ogg \
     ro.config.notification_sound=Kiro_Glass.ogg \
