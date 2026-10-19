@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     KiroOS Beta 4.1: the Recents thumbnail of an app is taken (SurfaceFlinger, on its main
+     thread) as the app leaves; at 60% of a 1440 x 2560 screen it held the composition for
+     110-120 ms, so an animation running at that moment froze. 45% still fills a Recents card
+     sharply, at about half the cost.
+-->
+<resources>
+    <item name="thumbnail_fullscreen_scale" type="fraction">45%</item>
+</resources>
