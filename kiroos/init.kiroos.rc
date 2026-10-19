@@ -83,6 +83,14 @@ on property:sys.boot_completed=1 && property:persist.sys.kiroos.keeprecovery=0
 # Beta 4: app caches cleared at every boot, a minute after it completed (kiroos_perf.sh)
 on property:sys.boot_completed=1
     start kiroos_trimcache
+    start kiroos_battlog
+
+# Beta 4.1: battery log, one line a minute (kiroos_diag.sh battlog, /data/kiroos/battlog.txt)
+service kiroos_battlog /system/bin/kiroos_diag.sh battlog
+    class main
+    user root
+    group root system
+    disabled
 
 service kiroos_trimcache /system/bin/kiroos_perf.sh trimcache
     class main
