@@ -55,6 +55,32 @@ if [ "$1" = trimcache ]; then
             log -t kiroos_perf "${k} sound: $f"
         fi
     done
+    # Beta 4.1: the KiroOS ringtone, notification and alarm become the defaults on phones updated
+    # from a build without them too (a new install already has them through ro.config.*). Only a
+    # sound still on LineageOS's own default changes; one the user picked stays. Done once, after
+    # the media scanner has the Kiro files (otherwise tried again at the next boot).
+    if [ "$(settings get global kiroos_default_sounds 2>/dev/null)" != 1 ]; then
+        ok=1
+        for e in ringtone:ringtones/Kiro_Aurora.ogg:Orion.ogg \
+                 notification_sound:notifications/Kiro_Glass.ogg:Argon.ogg \
+                 alarm_alert:alarms/Kiro_Sunrise.ogg:Hassium.ogg; do
+            IFS=:; set -- $e; IFS='
+'
+            id=$(content query --uri content://media/internal/audio/media --projection _id \
+                    --where "_data='/system/media/audio/$2'" 2>/dev/null | sed -n 's/.*_id=\([0-9]*\).*/\1/p' | head -1)
+            [ -n "$id" ] || { ok=0; continue; }
+            cur=$(settings get system $1 2>/dev/null)
+            file=
+            case "$cur" in content://media/*)
+                file=$(content query --uri "$cur" --projection _data 2>/dev/null | sed -n 's/.*_data=//p' | head -1) ;;
+            esac
+            if [ -z "$cur" ] || [ "$cur" = null ] || [ "${file##*/}" = "$3" ]; then
+                settings put system $1 content://media/internal/audio/media/$id
+                log -t kiroos_perf "$1: ${2##*/}"
+            fi
+        done
+        [ $ok = 1 ] && settings put global kiroos_default_sounds 1
+    fi
     exit 0
 fi
 
