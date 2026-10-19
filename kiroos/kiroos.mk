@@ -37,6 +37,11 @@ PRODUCT_COPY_FILES += \
     $(KIROOS_COMMON)/media/audio/notifications/Kiro_Glass.ogg:system/media/audio/notifications/Kiro_Glass.ogg \
     $(KIROOS_COMMON)/media/audio/notifications/Kiro_Drop.ogg:system/media/audio/notifications/Kiro_Drop.ogg \
     $(KIROOS_COMMON)/media/audio/notifications/Kiro_Spark.ogg:system/media/audio/notifications/Kiro_Spark.ogg
+# Beta 4.1: screen off (Kiro Lock) and lock screen to home (Kiro Unlock). Settings.Global
+# lock_sound / unlock_sound point to them (kiroos_perf.sh trimcache, once per phone).
+PRODUCT_COPY_FILES += \
+    $(KIROOS_COMMON)/media/audio/ui/Kiro_Lock.ogg:system/media/audio/ui/Kiro_Lock.ogg \
+    $(KIROOS_COMMON)/media/audio/ui/Kiro_Unlock.ogg:system/media/audio/ui/Kiro_Unlock.ogg
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     ro.config.ringtone=Kiro_Aurora.ogg \
     ro.config.notification_sound=Kiro_Glass.ogg \

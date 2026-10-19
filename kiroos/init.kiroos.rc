@@ -64,6 +64,8 @@ on property:persist.sys.kiroos.batt_cap=*
 # kernel keeps the highest value written, so the order of the two does not matter.
 on post-fs-data
     copy /efs/FactoryApp/batt_discharge_level /sys/class/power_supply/battery/batt_kiro_cycle
+    # Beta 4.1: the Natural colour mode by default, once (before system_server reads it)
+    exec - root system -- /system/bin/kiroos_perf.sh naturalcolors
 
 on property:persist.sys.kiroos.batt_cycle=*
     write /sys/class/power_supply/battery/batt_kiro_cycle ${persist.sys.kiroos.batt_cycle}

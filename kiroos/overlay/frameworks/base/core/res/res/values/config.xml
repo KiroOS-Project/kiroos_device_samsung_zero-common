@@ -17,6 +17,31 @@
         <item>12</item>
     </integer-array>
 
+    <!-- KiroOS Beta 4.1 haptics: one clean pulse per action, never a buzz. The S6's motor needs
+         about 10 ms to spin up, so taps are 10-14 ms (crisp, felt, not heard) and the long press
+         is one firmer 24 ms pulse. The stock patterns were double pulses (10 + 30 ms with a pause)
+         that felt soft and late. Patterns: {delay, on} in ms. -->
+    <integer-array name="config_virtualKeyVibePattern">
+        <item>0</item>
+        <item>14</item>
+    </integer-array>
+    <integer-array name="config_longPressVibePattern">
+        <item>0</item>
+        <item>24</item>
+    </integer-array>
+    <integer-array name="config_contextClickVibePattern">
+        <item>0</item>
+        <item>10</item>
+    </integer-array>
+    <integer-array name="config_clockTickVibePattern">
+        <item>0</item>
+        <item>10</item>
+    </integer-array>
+    <integer-array name="config_calendarDateVibePattern">
+        <item>0</item>
+        <item>10</item>
+    </integer-array>
+
     <!-- Always-on display: shift the ambient content around (anti burn-in) -->
     <bool name="config_enableBurnInProtection">true</bool>
 

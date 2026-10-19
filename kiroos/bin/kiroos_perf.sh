@@ -44,6 +44,35 @@ if [ "$1" = trimcache ]; then
     pm trim-caches 999G >/dev/null 2>&1
     set -- $(df /data | tail -1); after=$4
     log -t kiroos_perf "app caches cleared (free /data: $before -> $after)"
+    # Beta 4.1: the KiroOS lock / unlock sounds, in place of the stock ones (set once: a
+    # phone that already has them, or another sound, keeps what it has)
+    for k in lock unlock; do
+        case "$k" in lock) f=Kiro_Lock.ogg; o=Lock.ogg ;; *) f=Kiro_Unlock.ogg; o=Unlock.ogg ;; esac
+        cur=$(settings get global ${k}_sound 2>/dev/null)
+        if [ -f /system/media/audio/ui/$f ] && { [ "$cur" = null ] || [ -z "$cur" ] \
+                || [ "$cur" = /system/media/audio/ui/$o ]; }; then
+            settings put global ${k}_sound /system/media/audio/ui/$f
+            log -t kiroos_perf "${k} sound: $f"
+        fi
+    done
+    exit 0
+fi
+
+# Beta 4.1: natural colours. The panel's Natural mDNIe mode (accurate, not oversaturated) becomes
+# the default once per phone, before system_server reads it (LiveDisplay's DisplayModeControl
+# takes /data/misc/.displaymodedefault at start); a mode picked later in Settings > Display >
+# LiveDisplay stays. LiveDisplay Auto (warmer in the evening, outdoor mode in the sun) does the
+# adapting.
+if [ "$1" = naturalcolors ]; then
+    # (persist.* properties are not loaded yet at post-fs-data: a marker file says it was done)
+    if [ ! -e /data/misc/.kiroos_natural ] && [ -w /sys/class/mdnie/mdnie/mode ]; then
+        echo 2 > /sys/class/mdnie/mdnie/mode
+        echo 2 > /data/misc/.displaymodedefault
+        chown system:system /data/misc/.displaymodedefault
+        chmod 0660 /data/misc/.displaymodedefault
+        echo 1 > /data/misc/.kiroos_natural
+        log -t kiroos_perf "display: Natural colours by default"
+    fi
     exit 0
 fi
 

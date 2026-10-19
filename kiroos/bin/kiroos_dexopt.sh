@@ -32,6 +32,10 @@ sleep 30
 for p in com.kiroos.phone com.kiroos.messages com.kiroos.kai com.kiroos.camera; do
     nice -n 10 cmd package compile -m speed "$p" >/dev/null 2>&1
 done
+# Beta 4.1: KOptimize WebView fully compiled too. Every app that shows a web page (Surge, kAI's
+# sources, mail, logins) starts it; interpreted until the nightly job it made the first page of
+# each app slow after an update.
+nice -n 10 cmd package compile -m speed com.kiroos.webview >/dev/null 2>&1
 nice -n 10 cmd package compile -m speed-profile -a >/dev/null 2>&1
 
 setprop persist.sys.kiroos.dexopt_build "$build"
