@@ -33,9 +33,10 @@ on boot
 on post-fs-data
     mkdir /data/kiroos 0775 system system
     mkdir /data/kiroos/models 0775 system system
-    symlink /system/usr/share/kai/qwen3-0.6b-q4_k_m.gguf /data/kiroos/models/qwen3-0.6b-q4_k_m.gguf
-    symlink /system/usr/share/kai/smollm2-135m-instruct-q4_k_m.gguf /data/kiroos/models/smollm2-135m-instruct-q4_k_m.gguf
-    symlink /system/usr/share/kai/llama-3.2-1b-instruct-q4_k_m.gguf /data/kiroos/models/llama-3.2-1b-instruct-q4_k_m.gguf
+    # Beta 5: the chat models left the ROM; the old links of an updated phone go
+    rm /data/kiroos/models/qwen3-0.6b-q4_k_m.gguf
+    rm /data/kiroos/models/smollm2-135m-instruct-q4_k_m.gguf
+    rm /data/kiroos/models/llama-3.2-1b-instruct-q4_k_m.gguf
     symlink /system/usr/share/kai/whisper-base-q5_1.bin /data/kiroos/models/whisper-base-q5_1.bin
 
 # Kiro Thermal Guardian / Battery Guardian (decided in SystemUI, KiroGuardian)

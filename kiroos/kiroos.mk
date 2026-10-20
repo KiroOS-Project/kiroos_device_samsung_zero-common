@@ -76,22 +76,26 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.kiroos.keeprecovery=0
 
-# kAI 1.1 on-device models ("Keng 1.5" Flash-Lite Live / Lite / Pro) and the speech
-# model, run inside the kAI app by llama.cpp / whisper.cpp (JNI). Fetched by
-# /home/icholas/kai/kiro_fetch_models.sh and kiro_fetch_keng_live.sh into vendor/kiroos/kai, kept
-# out of git for their size; /data/kiroos/models links to them.
+# kAI's speech model (offline voice), run inside the kAI app by whisper.cpp (JNI). Beta 5: kAI
+# answers from the cloud; the three on-device chat models (1.25 GB of the ROM, the OTA package
+# had come within 99 MB of its 2 GiB limit) are no longer shipped. Fetched by
+# /home/icholas/kai/kiro_fetch_models.sh into vendor/kiroos/kai, kept out of git for its size;
+# /data/kiroos/models links to it.
 KIROOS_KAI := vendor/kiroos/kai
 KIROOS_KAI_FILES := \
-    qwen3-0.6b-q4_k_m.gguf \
-    smollm2-135m-instruct-q4_k_m.gguf \
-    llama-3.2-1b-instruct-q4_k_m.gguf \
     whisper-base-q5_1.bin \
     NOTICE.txt \
-    LICENSE-Qwen3.txt \
-    LICENSE-Llama-3.2.txt \
     LICENSE-whisper.txt
 PRODUCT_COPY_FILES += \
     $(foreach f,$(KIROOS_KAI_FILES),$(if $(wildcard $(KIROOS_KAI)/$(f)),$(KIROOS_KAI)/$(f):system/usr/share/kai/$(f)))
+
+# Beta 5: kAI's voice (KaiSpeech), Piper voices (~65 MB each): Paola (Italian, dataset CC0) and
+# Kristin (English, public domain), with the espeak-ng data for their phonemes (Italian and
+# English dictionaries only). In vendor/kiroos/kai/voice (from the sherpa-onnx tts-models release),
+# kept out of git like the speech model.
+KIROOS_KAI_VOICE_FILES := $(if $(wildcard $(KIROOS_KAI)/voice),$(shell cd $(KIROOS_KAI)/voice && find . -type f | sed 's|^\./||'))
+PRODUCT_COPY_FILES += \
+    $(foreach f,$(KIROOS_KAI_VOICE_FILES),$(KIROOS_KAI)/voice/$(f):system/usr/share/kai/voice/$(f))
 
 # KiroOS v1.0 app suite (packages/apps/KiroOS/*) and the stock apps it replaces
 $(call inherit-product, packages/apps/KiroOS/kiroos_apps.mk)
